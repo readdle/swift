@@ -455,7 +455,8 @@ public:
     auto Val = getDeclRefStr(Arg);
     auto Kind = getPlatformConditionKind(KindName).getValue();
     auto Target = Ctx.LangOpts.getPlatformConditionValue(Kind);
-    return Target == Val;
+    return Target == Val || (Kind == PlatformConditionKind::OS &&
+                             Target == "Android" && Val == "Linux");
   }
 
   bool visitPrefixUnaryExpr(PrefixUnaryExpr *E) {

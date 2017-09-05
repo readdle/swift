@@ -27,6 +27,11 @@
 #include <link.h>
 #include <string.h>
 
+#ifdef __ANDROID__
+#include "llvm/ADT/StringRef.h"
+#include <android/log.h>
+#endif
+
 using namespace swift;
 
 /// The symbol name in the image that identifies the beginning of the
@@ -66,6 +71,13 @@ static InspectArgs TypeMetadataRecordArgs = {
 static SectionInfo getSectionInfo(const char *imageName,
                                   const char *sectionName) {
   SectionInfo sectionInfo = { 0, nullptr };
+#ifdef __ANDROID__
+  llvm::StringRef imagePath = imageName;
+  if (imagePath.startswith("/system/lib") ||
+      (imageName && !imagePath.endswith(".so"))) {
+    return sectionInfo;
+  }
+#endif
   void *handle = dlopen(imageName, RTLD_LAZY | RTLD_NOLOAD);
   if (!handle) {
     fatalError(/* flags = */ 0, "dlopen() failed on `%s': %s", imageName,
@@ -77,6 +89,11 @@ static SectionInfo getSectionInfo(const char *imageName,
     const char *section = reinterpret_cast<const char *>(symbol);
     memcpy(&sectionInfo.size, section, sizeof(uint64_t));
     sectionInfo.data = section + sizeof(uint64_t);
+#ifdef __ANDROID__
+    __android_log_print(ANDROID_LOG_INFO, "SwiftRuntime",
+                        "Conformances for %s - %p[%d]", imageName,
+                        (void *)sectionInfo.data, (int)sectionInfo.size);
+#endif
   }
   dlclose(handle);
   return sectionInfo;

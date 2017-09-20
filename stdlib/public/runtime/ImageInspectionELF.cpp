@@ -73,7 +73,7 @@ static SectionInfo getSectionInfo(const char *imageName,
   SectionInfo sectionInfo = { 0, nullptr };
 #ifdef __ANDROID__
   llvm::StringRef imagePath = imageName;
-  if (imagePath.startswith("/system/lib") ||
+  if (imagePath.startswith("/system") ||
       (imageName && !imagePath.endswith(".so"))) {
     return sectionInfo;
   }

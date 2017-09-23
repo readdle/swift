@@ -80,8 +80,15 @@ static SectionInfo getSectionInfo(const char *imageName,
 #endif
   void *handle = dlopen(imageName, RTLD_LAZY | RTLD_NOLOAD);
   if (!handle) {
+#ifdef __ANDROID__
+    __android_log_print(ANDROID_LOG_INFO, "SwiftRuntime",
+                        "dlopen() failed on `%s': %s", imageName,
+                        dlerror());
+    return sectionInfo;
+#else
     fatalError(/* flags = */ 0, "dlopen() failed on `%s': %s", imageName,
                dlerror());
+#endif
   }
   void *symbol = dlsym(handle, sectionName);
   if (symbol) {

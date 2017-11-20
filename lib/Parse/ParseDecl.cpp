@@ -2535,9 +2535,26 @@ Parser::parseDecl(ParseDeclOptions Flags,
 
   if (auto SF = CurDeclContext->getParentSourceFile()) {
     if (!getScopeInfo().isInactiveConfigBlock()) {
+      bool ObjCAttrDisabled = Context.LangOpts.DisableObjCAttr
+        && !Context.LangOpts.EnableObjCInterop // do nothing is ObjCInterop enabled
+        && !isa<EnumDecl>(DeclResult.get());   // preserve attributes on enums
+
+      bool AttributesChanged = false;
+
       for (auto Attr : Attributes) {
-        if (isa<ObjCAttr>(Attr) || isa<DynamicAttr>(Attr))
-          SF->AttrsRequiringFoundation.insert(Attr);
+        if (isa<ObjCAttr>(Attr) || isa<DynamicAttr>(Attr)) {
+          if (ObjCAttrDisabled) {
+            Attr->setInvalid();
+            Attributes.removeAttribute(Attr);
+            AttributesChanged = true;
+          } else {
+            SF->AttrsRequiringFoundation.insert(Attr);
+          }
+        }
+      }
+
+      if (AttributesChanged) {
+        DeclResult.get()->getAttrs() = Attributes;
       }
     }
   }

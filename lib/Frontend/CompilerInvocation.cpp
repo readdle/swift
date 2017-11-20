@@ -982,6 +982,8 @@ static bool ParseLangArgs(LangOptions &Opts, ArgList &Args,
                    Target.isOSDarwin());
   Opts.EnableSILOpaqueValues |= Args.hasArg(OPT_enable_sil_opaque_values);
 
+  Opts.DisableObjCAttr |= Args.hasArg(OPT_experimental_disable_objc_attr);
+
   // Must be processed after any other language options that could affect
   // platform conditions.
   bool UnsupportedOS, UnsupportedArch;

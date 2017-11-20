@@ -88,6 +88,12 @@ def disable_objc_interop :
   Flag<["-"], "disable-objc-interop">,
   HelpText<"Disable Objective-C interop code generation and config directives">;
 
+def experimental_disable_objc_attr :
+  Flag<["-"], "experimental-disable-objc-attr">,
+  Flags<[FrontendOption, HelpHidden]>,
+  HelpText<"Disables parsing @objc and dynamic attrs if Objective-C interop disabled. "
+           "Do nothing if Objective-C interop enabled">;
+
 def enable_swiftcall : Flag<["-"], "enable-swiftcall">,
   HelpText<"Enable the use of LLVM swiftcall support">;
 

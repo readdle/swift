@@ -341,6 +341,8 @@ static bool ParseLangArgs(LangOptions &Opts, ArgList &Args,
   Opts.UseDarwinPreStableABIBit = true;
 #endif
 
+  Opts.DisableObjCAttr |= Args.hasArg(OPT_experimental_disable_objc_attr);
+
   // Must be processed after any other language options that could affect
   // platform conditions.
   bool UnsupportedOS, UnsupportedArch;

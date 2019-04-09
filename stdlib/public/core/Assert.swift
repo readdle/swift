@@ -85,15 +85,9 @@ public func precondition(
   _ message: @autoclosure () -> String = String(),
   file: StaticString = #file, line: UInt = #line
 ) {
-  // Only check in debug and release mode.  In release mode just trap.
-  if _isDebugAssertConfiguration() {
-    if !_branchHint(condition(), expected: true) {
-      _assertionFailure("precondition failed", message(), file: file, line: line,
-        flags: _fatalErrorFlags())
-    }
-  } else if _isReleaseAssertConfiguration() {
-    let error = !condition()
-    Builtin.condfail(error._value)
+  if !_branchHint(condition(), expected: true) {
+    _assertionFailure("precondition failed", message(), file: file, line: line,
+      flags: _fatalErrorFlags())
   }
 }
 
@@ -165,14 +159,8 @@ public func preconditionFailure(
   _ message: @autoclosure () -> String = String(),
   file: StaticString = #file, line: UInt = #line
 ) -> Never {
-  // Only check in debug and release mode.  In release mode just trap.
-  if _isDebugAssertConfiguration() {
-    _assertionFailure("fatal error", message(), file: file, line: line,
-      flags: _fatalErrorFlags())
-  } else if _isReleaseAssertConfiguration() {
-    Builtin.int_trap()
-  }
-  _conditionallyUnreachable()
+  _assertionFailure("fatal error", message(), file: file, line: line,
+    flags: _fatalErrorFlags())
 }
 
 /// Unconditionally prints a given message and stops execution.
@@ -203,15 +191,9 @@ public func _precondition(
   _ condition: @autoclosure () -> Bool, _ message: StaticString = StaticString(),
   file: StaticString = #file, line: UInt = #line
 ) {
-  // Only check in debug and release mode. In release mode just trap.
-  if _isDebugAssertConfiguration() {
-    if !_branchHint(condition(), expected: true) {
-      _fatalErrorMessage("fatal error", message, file: file, line: line,
-        flags: _fatalErrorFlags())
-    }
-  } else if _isReleaseAssertConfiguration() {
-    let error = !condition()
-    Builtin.condfail(error._value)
+  if !_branchHint(condition(), expected: true) {
+    _fatalErrorMessage("fatal error", message, file: file, line: line,
+      flags: _fatalErrorFlags())
   }
 }
 
@@ -233,14 +215,12 @@ public func _overflowChecked<T>(
   file: StaticString = #file, line: UInt = #line
 ) -> T {
   let (result, error) = args
-  if _isDebugAssertConfiguration() {
-    if _branchHint(error, expected: false) {
-      _fatalErrorMessage("fatal error", "Overflow/underflow", 
-        file: file, line: line, flags: _fatalErrorFlags())
-    }
-  } else {
-    Builtin.condfail(error._value)
+
+  if _branchHint(error, expected: false) {
+    _fatalErrorMessage("fatal error", "Overflow/underflow",
+      file: file, line: line, flags: _fatalErrorFlags())
   }
+
   return result
 }
 

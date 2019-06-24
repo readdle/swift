@@ -7,7 +7,7 @@
         "clang": {
             "remote": { "id": "apple/swift-clang" } },
         "swift": {
-            "remote": { "id": "apple/swift" } },
+            "remote": { "id": "readdle/swift" } },
         "lldb": {
             "remote": { "id": "apple/swift-lldb" } },
         "cmark": {
@@ -25,9 +25,9 @@
         "swift-corelibs-xctest": {
             "remote": { "id": "apple/swift-corelibs-xctest" } },
         "swift-corelibs-foundation": {
-            "remote": { "id": "apple/swift-corelibs-foundation" } },
+            "remote": { "id": "readdle/swift-corelibs-foundation" } },
         "swift-corelibs-libdispatch": {
-            "remote": { "id": "apple/swift-corelibs-libdispatch" } },
+            "remote": { "id": "readdle/swift-corelibs-libdispatch" } },
         "swift-integration-tests": {
             "remote": { "id": "apple/swift-integration-tests" } },
         "swift-xcode-playground-support": {
@@ -216,6 +216,30 @@
                 "swift-corelibs-xctest": "swift-5.0-branch",
                 "swift-corelibs-foundation": "swift-5.0-branch",
                 "swift-corelibs-libdispatch": "swift-5.0-branch",
+                "swift-integration-tests": "swift-5.0-branch",
+                "swift-xcode-playground-support": "swift-5.0-branch",
+                "ninja": "release",
+                "icu": "release-61-1",
+                "clang-tools-extra": "swift-5.0-branch",
+                "libcxx": "swift-5.0-branch"
+            }
+        },
+        "swift-android-5.0-branch" : {
+            "aliases": ["swift-android-5.0-branch"],
+            "repos": {
+                "llvm": "swift-5.0-branch",
+                "clang": "swift-5.0-branch",
+                "compiler-rt": "swift-5.0-branch",
+                "swift": "swift-android-5.0-branch",
+                "lldb": "swift-5.0-branch",
+                "cmark": "swift-5.0-branch",
+                "llbuild": "swift-5.0-branch",
+                "swiftpm": "swift-5.0-branch",
+                "swift-syntax": "swift-5.0-branch",
+                "swift-stress-tester": "swift-5.0-branch",
+                "swift-corelibs-xctest": "swift-5.0-branch",
+                "swift-corelibs-foundation": "swift-android-5.0-branch",
+                "swift-corelibs-libdispatch": "swift-android-5.0-branch",
                 "swift-integration-tests": "swift-5.0-branch",
                 "swift-xcode-playground-support": "swift-5.0-branch",
                 "ninja": "release",

@@ -1921,7 +1921,55 @@ function(add_swift_target_library name)
         DEPLOYMENT_VERSION_WATCHOS "${SWIFTLIB_DEPLOYMENT_VERSION_WATCHOS}"
       )
 
-      if(NOT SWIFTLIB_OBJECT_LIBRARY)
+      if(NOT SWIFTLIB_OBJECT_LIBRARY AND NOT "${sdk}" IN_LIST SWIFT_APPLE_PLATFORMS)
+        compute_library_subdir(library_subdir ${sdk} ${arch})
+
+        # Determine the subdirectory where this library will be installed.
+        set(resource_dir_sdk_subdir "${SWIFT_SDK_${sdk}_LIB_SUBDIR}")
+        precondition(resource_dir_sdk_subdir)
+
+        if(SWIFTLIB_SHARED)
+          set(resource_dir "swift")
+          set(file_permissions
+              OWNER_READ OWNER_WRITE OWNER_EXECUTE
+              GROUP_READ GROUP_EXECUTE
+              WORLD_READ WORLD_EXECUTE)
+        else()
+          set(resource_dir "swift_static")
+          set(file_permissions
+              OWNER_READ OWNER_WRITE
+              GROUP_READ
+              WORLD_READ)
+        endif()
+
+        swift_install_in_component("${SWIFTLIB_INSTALL_IN_COMPONENT}"
+                                   FILES $<TARGET_FILE:${VARIANT_NAME}>
+                                   DESTINATION "lib${LLVM_LIBDIR_SUFFIX}/${resource_dir}/${resource_dir_sdk_subdir}/${arch}"
+                                   PERMISSIONS ${file_permissions})
+
+        swift_is_installing_component("${SWIFTLIB_INSTALL_IN_COMPONENT}" is_installing)
+        if(NOT is_installing)
+          set_property(GLOBAL APPEND PROPERTY SWIFT_BUILDTREE_EXPORTS ${VARIANT_NAME})
+        else()
+          set_property(GLOBAL APPEND PROPERTY SWIFT_EXPORTS ${VARIANT_NAME})
+        endif()
+
+        # Add Swift standard library targets as dependencies to the top-level
+        # convenience target.
+        set(FILTERED_UNITTESTS
+              swiftStdlibCollectionUnittest
+              swiftStdlibUnicodeUnittest)
+
+        if(TARGET "swift-stdlib${VARIANT_SUFFIX}" AND
+           TARGET "swift-test-stdlib${VARIANT_SUFFIX}")
+          add_dependencies("swift-stdlib${VARIANT_SUFFIX}" ${VARIANT_NAME})
+          if(NOT "${name}" IN_LIST FILTERED_UNITTESTS)
+            add_dependencies("swift-test-stdlib${VARIANT_SUFFIX}" ${VARIANT_NAME})
+          endif()
+        endif()
+      endif()
+
+      if(NOT SWIFTLIB_OBJECT_LIBRARY AND "${sdk}" IN_LIST SWIFT_APPLE_PLATFORMS)
         # Add dependencies on the (not-yet-created) custom lipo target.
         foreach(DEP ${SWIFTLIB_LINK_LIBRARIES})
           if (NOT "${DEP}" STREQUAL "icucore")
@@ -1945,28 +1993,18 @@ function(add_swift_target_library name)
       endif()
     endforeach()
 
-    if(NOT SWIFTLIB_OBJECT_LIBRARY)
+    if(NOT SWIFTLIB_OBJECT_LIBRARY AND "${sdk}" IN_LIST SWIFT_APPLE_PLATFORMS)
       # Determine the name of the universal library.
       if(SWIFTLIB_SHARED)
-        if("${sdk}" STREQUAL "WINDOWS")
-          set(UNIVERSAL_LIBRARY_NAME
-            "${SWIFTLIB_DIR}/${SWIFT_SDK_${sdk}_LIB_SUBDIR}/${name}.dll")
-        else()
-          set(UNIVERSAL_LIBRARY_NAME
-            "${SWIFTLIB_DIR}/${SWIFT_SDK_${sdk}_LIB_SUBDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${name}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-        endif()
+        set(UNIVERSAL_LIBRARY_NAME
+          "${SWIFTLIB_DIR}/${SWIFT_SDK_${sdk}_LIB_SUBDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${name}${CMAKE_SHARED_LIBRARY_SUFFIX}")
       else()
-        if("${sdk}" STREQUAL "WINDOWS")
-          set(UNIVERSAL_LIBRARY_NAME
-            "${SWIFTLIB_DIR}/${SWIFT_SDK_${sdk}_LIB_SUBDIR}/${name}.lib")
-        else()
-          set(UNIVERSAL_LIBRARY_NAME
-            "${SWIFTLIB_DIR}/${SWIFT_SDK_${sdk}_LIB_SUBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${name}${CMAKE_STATIC_LIBRARY_SUFFIX}")
-        endif()
+        set(UNIVERSAL_LIBRARY_NAME
+          "${SWIFTLIB_DIR}/${SWIFT_SDK_${sdk}_LIB_SUBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${name}${CMAKE_STATIC_LIBRARY_SUFFIX}")
       endif()
 
       set(lipo_target "${name}-${SWIFT_SDK_${sdk}_LIB_SUBDIR}")
-      if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin" AND SWIFTLIB_SHARED)
+      if(SWIFTLIB_SHARED)
         set(codesign_arg CODESIGN)
       endif()
       precondition(THIN_INPUT_TARGETS)
@@ -2007,17 +2045,6 @@ function(add_swift_target_library name)
           FILES "${UNIVERSAL_LIBRARY_NAME}"
           DESTINATION "lib${LLVM_LIBDIR_SUFFIX}/${resource_dir}/${resource_dir_sdk_subdir}"
           PERMISSIONS ${file_permissions})
-      if(sdk STREQUAL WINDOWS)
-        foreach(arch ${SWIFT_SDK_WINDOWS_ARCHITECTURES})
-          if(TARGET ${name}-windows-${arch}_IMPLIB)
-            get_target_property(import_library ${name}-windows-${arch}_IMPLIB IMPORTED_LOCATION)
-            swift_install_in_component(${SWIFTLIB_INSTALL_IN_COMPONENT}
-              FILES ${import_library}
-              DESTINATION "lib${LLVM_LIBDIR_SUFFIX}/${resource_dir}/${resource_dir_sdk_subdir}/${arch}"
-              PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
-          endif()
-        endforeach()
-      endif()
 
       swift_is_installing_component("${SWIFTLIB_INSTALL_IN_COMPONENT}" is_installing)
       if(NOT is_installing)
@@ -2270,12 +2297,21 @@ function(add_swift_target_executable name)
         add_dependencies("swift-test-stdlib${VARIANT_SUFFIX}" ${VARIANT_NAME})
       endif()
 
-      # Don't add the ${arch} to the suffix.  We want to link against fat
-      # libraries.
-      _list_add_string_suffix(
-          "${SWIFTEXE_TARGET_DEPENDS}"
-          "-${SWIFT_SDK_${sdk}_LIB_SUBDIR}"
-          SWIFTEXE_TARGET_DEPENDS_with_suffix)
+      # We don't add the ${arch} to the target suffix because we want to link
+      # against fat libraries.  This only works for the Darwin targets as MachO is
+      # the only format with the fat libraries.
+      if(${sdk} IN_LIST SWIFT_APPLE_PLATFORMS)
+        _list_add_string_suffix(
+            "${SWIFTEXE_TARGET_DEPENDS}"
+            "-${SWIFT_SDK_${sdk}_LIB_SUBDIR}"
+            SWIFTEXE_TARGET_DEPENDS_with_suffix)
+      else()
+        _list_add_string_suffix(
+            "${SWIFTEXE_TARGET_DEPENDS}"
+            "-${SWIFT_SDK_${sdk}_LIB_SUBDIR}-${arch}"
+            SWIFTEXE_TARGET_DEPENDS_with_suffix)
+      endif()
+
       _add_swift_executable_single(
           ${VARIANT_NAME}
           ${SWIFTEXE_TARGET_SOURCES}

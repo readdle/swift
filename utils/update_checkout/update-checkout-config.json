@@ -13,9 +13,9 @@
         "cmark": {
             "remote": { "id": "apple/swift-cmark" } },
         "llbuild": {
-            "remote": { "id": "apple/swift-llbuild" } },
+            "remote": { "id": "readdle/swift-llbuild" } },
         "swiftpm": {
-            "remote": { "id": "apple/swift-package-manager" } },
+            "remote": { "id": "readdle/swift-package-manager" } },
         "swift-syntax": {
             "remote": { "id": "apple/swift-syntax" } },
         "swift-stress-tester": {
@@ -23,7 +23,7 @@
         "compiler-rt": {
             "remote": { "id": "apple/swift-compiler-rt" } },
         "swift-corelibs-xctest": {
-            "remote": { "id": "apple/swift-corelibs-xctest" } },
+            "remote": { "id": "readdle/swift-corelibs-xctest" } },
         "swift-corelibs-foundation": {
             "remote": { "id": "readdle/swift-corelibs-foundation" } },
         "swift-corelibs-libdispatch": {
@@ -233,11 +233,11 @@
                 "swift": "swift-android-5.0-branch",
                 "lldb": "swift-5.0-branch",
                 "cmark": "swift-5.0-branch",
-                "llbuild": "swift-5.0-branch",
-                "swiftpm": "swift-5.0-branch",
+                "llbuild": "swift-android-5.0-branch",
+                "swiftpm": "swift-android-5.0-branch",
                 "swift-syntax": "swift-5.0-branch",
                 "swift-stress-tester": "swift-5.0-branch",
-                "swift-corelibs-xctest": "swift-5.0-branch",
+                "swift-corelibs-xctest": "swift-android-5.0-branch",
                 "swift-corelibs-foundation": "swift-android-5.0-branch",
                 "swift-corelibs-libdispatch": "swift-android-5.0-branch",
                 "swift-integration-tests": "swift-5.0-branch",

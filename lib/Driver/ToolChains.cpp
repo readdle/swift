@@ -1083,7 +1083,7 @@ void ToolChain::getRuntimeLibraryPath(SmallVectorImpl<char> &runtimeLibPath,
   llvm::sys::path::append(runtimeLibPath,
                           getPlatformNameForTriple(T));
 
-  if (!Triple.isOSDarwin())
+  if (!T.isOSDarwin())
     llvm::sys::path::append(runtimeLibPath, getMajorArchitectureName(Triple));
 }
 

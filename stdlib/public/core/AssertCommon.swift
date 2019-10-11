@@ -153,6 +153,9 @@ internal func _assertionFailure(
   _ prefix: StaticString, _ message: String,
   flags: UInt32
 ) -> Never {
+  _swift_stdlib_errorHandler?(prefix, message, "stdlib internal check", 0, flags,
+                              Int32(Builtin.assert_configuration()))
+
   prefix.withUTF8Buffer {
     (prefix) -> Void in
     message._withUnsafeBufferPointerToUTF8 {

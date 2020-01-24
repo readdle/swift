@@ -106,6 +106,12 @@ def verify_syntax_tree : Flag<["-"], "verify-syntax-tree">,
 def show_diagnostics_after_fatal : Flag<["-"], "show-diagnostics-after-fatal">,
   HelpText<"Keep emitting subsequent diagnostics after a fatal error">;
 
+def experimental_disable_objc_attr :
+  Flag<["-"], "experimental-disable-objc-attr">,
+  Flags<[FrontendOption, HelpHidden]>,
+  HelpText<"Disables parsing @objc and dynamic attrs if Objective-C interop disabled. "
+           "Do nothing if Objective-C interop enabled">;
+
 def enable_swiftcall : Flag<["-"], "enable-swiftcall">,
   HelpText<"Enable the use of LLVM swiftcall support">;
 

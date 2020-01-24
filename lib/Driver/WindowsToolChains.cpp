@@ -120,8 +120,6 @@ toolchains::Windows::constructInvocation(const LinkJobAction &job,
   }
 
   SmallString<128> swiftrtPath = SharedRuntimeLibPath;
-  llvm::sys::path::append(swiftrtPath,
-                          swift::getMajorArchitectureName(getTriple()));
   llvm::sys::path::append(swiftrtPath, "swiftrt.obj");
   Arguments.push_back(context.Args.MakeArgString(swiftrtPath));
 
@@ -155,6 +153,7 @@ toolchains::Windows::constructInvocation(const LinkJobAction &job,
 
   if (context.Args.hasArg(options::OPT_profile_generate)) {
     SmallString<128> LibProfile(SharedRuntimeLibPath);
+    llvm::sys::path::remove_filename(LibProfile); // remove arch name
     llvm::sys::path::remove_filename(LibProfile); // remove platform name
     llvm::sys::path::append(LibProfile, "clang", "lib");
 

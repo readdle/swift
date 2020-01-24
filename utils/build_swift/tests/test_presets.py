@@ -41,7 +41,7 @@ PRESET_DEFAULTS = {
     'swift_install_destdir': '/tmp/install/swift',
     'symbols_package': '/path/to/symbols/package',
     'ndk_path': '/path/to/ndk',
-    'arm_dir': '/path/to/arm',
+    'icu_dir': '/path/to/arm',
 }
 
 SAMPLE_PRESET = """

@@ -183,6 +183,7 @@ static void addCommonFrontendArgs(const ToolChain &TC, const OutputInfo &OI,
                        options::OPT_warn_swift3_objc_inference_minimal,
                        options::OPT_warn_swift3_objc_inference_complete);
   inputArgs.AddLastArg(arguments, options::OPT_warn_implicit_overrides);
+  inputArgs.AddLastArg(arguments, options::OPT_experimental_disable_objc_attr);
   inputArgs.AddLastArg(arguments, options::OPT_typo_correction_limit);
   inputArgs.AddLastArg(arguments, options::OPT_enable_app_extension);
   inputArgs.AddLastArg(arguments, options::OPT_enable_testing);
@@ -1045,6 +1046,12 @@ void ToolChain::getClangLibraryPath(const ArgList &Args,
   const llvm::Triple &T = getTriple();
 
   getRuntimeLibraryPath(LibPath, Args, /*Shared=*/true);
+
+  // Remove arch name.
+  if (!T.isOSDarwin()) {
+    llvm::sys::path::remove_filename(LibPath);
+  }
+
   // Remove platform name.
   llvm::sys::path::remove_filename(LibPath);
   llvm::sys::path::append(LibPath, "clang", "lib",
@@ -1071,8 +1078,13 @@ void ToolChain::getRuntimeLibraryPath(SmallVectorImpl<char> &runtimeLibPath,
     llvm::sys::path::append(runtimeLibPath, "lib",
                             shared ? "swift" : "swift_static");
   }
+  const llvm::Triple &T = getTriple();
+
   llvm::sys::path::append(runtimeLibPath,
-                          getPlatformNameForTriple(getTriple()));
+                          getPlatformNameForTriple(T));
+
+  if (!T.isOSDarwin())
+    llvm::sys::path::append(runtimeLibPath, getMajorArchitectureName(Triple));
 }
 
 bool ToolChain::sanitizerRuntimeLibExists(const ArgList &args,

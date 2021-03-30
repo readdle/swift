@@ -4233,6 +4233,30 @@ Parser::parseDecl(ParseDeclOptions Flags,
       return DeclResult;
   }
 
+  if (auto SF = CurDeclContext->getParentSourceFile()) {
+    if (!InInactiveClauseEnvironment) {
+
+      bool ObjCAttrDisabled = Context.LangOpts.DisableObjCAttr
+        && !Context.LangOpts.EnableObjCInterop; // do nothing if ObjCInterop enabled
+
+      bool AttributesChanged = false;
+
+      for (auto Attr : Attributes) {
+        if (isa<ObjCAttr>(Attr)) {
+          if (ObjCAttrDisabled) {
+            Attr->setInvalid();
+            Attributes.removeAttribute(Attr);
+            AttributesChanged = true;
+          }
+        }
+      }
+
+      if (AttributesChanged) {
+        DeclResult.get()->getAttrs() = Attributes;
+      }
+    }
+  }
+
   if (DeclResult.isNonNull()) {
     Decl *D = DeclResult.get();
     if (!HandlerAlreadyCalled)

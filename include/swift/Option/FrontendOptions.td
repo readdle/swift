@@ -126,6 +126,11 @@ def verify_syntax_tree : Flag<["-"], "verify-syntax-tree">,
 def show_diagnostics_after_fatal : Flag<["-"], "show-diagnostics-after-fatal">,
   HelpText<"Keep emitting subsequent diagnostics after a fatal error">;
   
+def experimental_disable_objc_attr : Flag<["-"], "experimental-disable-objc-attr">,
+  Flags<[FrontendOption]>,
+  HelpText<"Disables parsing @objc and dynamic attrs. "
+           "Ignored if Objective-C interop enabled">;
+
 def enable_cross_import_overlays : Flag<["-"], "enable-cross-import-overlays">,
   HelpText<"Automatically import declared cross-import overlays.">;
 def disable_cross_import_overlays : Flag<["-"], "disable-cross-import-overlays">,

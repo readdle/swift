@@ -211,6 +211,11 @@ namespace swift {
     /// was not compiled with -enable-testing.
     bool EnableTestableAttrRequiresTestableModule = true;
 
+    /// Experimental
+    /// Disables @objc and dynamic attrs
+    /// Ignored when EnableObjCInterop == true
+    bool DisableObjCAttr = false;
+
     ///
     /// Flags for developers
     ///

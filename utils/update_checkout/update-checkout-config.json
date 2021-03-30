@@ -3,7 +3,7 @@
     "https-clone-pattern": "https://github.com/%s.git",
     "repos" : {
        "swift": {
-            "remote": { "id": "apple/swift" } },
+            "remote": { "id": "readdle/swift" } },
        "cmark": {
             "remote": { "id": "apple/swift-cmark" } },
         "llbuild": {
@@ -23,9 +23,9 @@
         "swift-corelibs-xctest": {
             "remote": { "id": "apple/swift-corelibs-xctest" } },
         "swift-corelibs-foundation": {
-            "remote": { "id": "apple/swift-corelibs-foundation" } },
+            "remote": { "id": "readdle/swift-corelibs-foundation" } },
         "swift-corelibs-libdispatch": {
-            "remote": { "id": "apple/swift-corelibs-libdispatch" } },
+            "remote": { "id": "readdle/swift-corelibs-libdispatch" } },
         "swift-integration-tests": {
             "remote": { "id": "apple/swift-integration-tests" } },
         "swift-xcode-playground-support": {
@@ -334,7 +334,34 @@
                 "swift-format": "main"
             }
         },
-       "release/5.3-20201012": {
+        "readdle/release/5.4": {
+            "aliases": ["readdle/release/5.4"],
+            "repos": {
+                "llvm-project": "swift/release/5.4",
+                "swift": "readdle/release/5.4",
+                "cmark": "release/5.4",
+                "llbuild": "release/5.4",
+                "swift-tools-support-core": "release/5.4",
+                "swiftpm": "release/5.4",
+                "swift-argument-parser": "0.3.0",
+                "swift-driver": "release/5.4",
+                "swift-syntax": "release/5.4",
+                "swift-stress-tester": "release/5.4",
+                "swift-corelibs-xctest": "release/5.4",
+                "swift-corelibs-foundation": "readdle/release/5.4",
+                "swift-corelibs-libdispatch": "readdle/release/5.4",
+                "swift-integration-tests": "release/5.4",
+                "swift-xcode-playground-support": "release/5.4",
+                "ninja": "release",
+                "icu": "release-65-1",
+                "yams": "3.0.1",
+                "cmake": "v3.16.5",
+                "indexstore-db": "release/5.4",
+                "sourcekit-lsp": "release/5.4",
+                "swift-format": "main"
+            }
+        },
+        "release/5.3-20201012": {
             "aliases": ["release/5.3-20201012"],
             "repos": {
                 "llvm-project": "swift/release/5.3",

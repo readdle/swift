@@ -1,5 +1,8 @@
 // RUN: %target-swift-frontend -I %S/Inputs -enable-cxx-interop -emit-ir -o - %s | %FileCheck %s
 
+// UNSUPPORTED: OS=linux-android
+// UNSUPPORTED: OS=linux-androideabi
+
 import MemoryLayout
 
 var v = PrivateMemberLayout()

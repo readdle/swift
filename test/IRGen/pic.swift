@@ -2,7 +2,7 @@
 // platforms.
 
 // SR-12194
-// XFAIL: OS=linux-android, CPU=aarch64
+// XFAIL: OS=linux-android && CPU=aarch64
 // UNSUPPORTED: OS=linux-gnu
 
 // RUN: %target-swift-frontend %s -module-name main -S -o - | %FileCheck -check-prefix=%target-cpu -check-prefix=%target-cpu-%target-sdk-name %s
@@ -20,6 +20,12 @@ public func use_global() -> Int {
 // i386:       [[PIC_BLOCK:^L.*\$pb]]:{{$}}
 // i386:         popl [[PIC_REG:%[a-z]+]]
 // i386:         movl {{_?}}$s4main6globalSivp-[[PIC_BLOCK]]([[PIC_REG]]), {{%[a-z]+}}
+
+// i686-LABEL: {{_?}}$s4main10use_globalSiyF:
+// i686:       [[PIC_BLOCK:^\.L.*\$pb]]:{{$}}
+// i686:         popl [[PIC_REG:%[a-z]+]]
+// i686:         addl $_GLOBAL_OFFSET_TABLE_+(.Ltmp1-[[PIC_BLOCK]]), [[PIC_REG]]
+// i686:         movl {{_?}}($s4main6globalSivp)@GOTOFF([[PIC_REG]]), {{%[a-z]+}}
 
 // armv7-LABEL: {{_?}}$s4main10use_globalSiyF:
 // Check for the runtime memory enforcement call. The global address may be

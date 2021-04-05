@@ -15,6 +15,7 @@ func forceStuff(x: float4, y: float3) -> (Float, Float, Float, Float) {
 
 // x86_64-LABEL: define{{( dllexport)?}}{{( protected)?}} <4 x float> @simd_c_args(<4 x float> %0)
 // i386-LABEL: define{{( dllexport)?}}{{( protected)?}} <2 x i64> @simd_c_args(<4 x float> %0)
+// i686-LABEL: define{{( dllexport)?}}{{( protected)?}} <4 x float> @simd_c_args(<4 x float> %0)
 // aarch64-LABEL: define{{( dllexport)?}}{{( protected)?}} <4 x float> @simd_c_args(<4 x float> %0)
 // arm64-LABEL: define{{( dllexport)?}}{{( protected)?}} <4 x float> @simd_c_args(<4 x float> %0)
 // arm64e-LABEL: define{{( dllexport)?}}{{( protected)?}} <4 x float> @simd_c_args(<4 x float> %0)
@@ -32,6 +33,7 @@ entry(%x : $float4):
 
 // x86_64-LABEL: define{{( dllexport)?}}{{( protected)?}} <3 x float> @simd_c_args_float3(<3 x float> %0)
 // i386-LABEL: define{{( dllexport)?}}{{( protected)?}} <2 x i64> @simd_c_args_float3(<3 x float> %0)
+// i686-LABEL: define{{( dllexport)?}}{{( protected)?}} <3 x float> @simd_c_args_float3(<3 x float> %0)
 // aarch64-LABEL: define{{( dllexport)?}}{{( protected)?}} <3 x float> @simd_c_args_float3(<4 x i32> %0)
 // arm64-LABEL: define{{( dllexport)?}}{{( protected)?}} <3 x float> @simd_c_args_float3(<4 x i32> %0)
 // arm64e-LABEL: define{{( dllexport)?}}{{( protected)?}} <3 x float> @simd_c_args_float3(<4 x i32> %0)
@@ -55,6 +57,7 @@ entry(%x : $float3):
 
 // x86_64-LABEL: define{{( dllexport)?}}{{( protected)?}} swiftcc { float, float, float, float } @simd_native_args(float %0, float %1, float %2, float %3)
 // i386-LABEL: define{{( dllexport)?}}{{( protected)?}} swiftcc void @simd_native_args(%T4simd6float4V* noalias nocapture sret %0, %T4simd6float4V* noalias nocapture dereferenceable({{.*}}) %1)
+// i686-LABEL: define{{( dllexport)?}}{{( protected)?}} swiftcc void @simd_native_args(%T4simd6float4V* noalias nocapture sret %0, %T4simd6float4V* noalias nocapture dereferenceable({{.*}}) %1)
 // aarch64-LABEL: define{{( dllexport)?}}{{( protected)?}} swiftcc { float, float, float, float } @simd_native_args(float %0, float %1, float %2, float %3)
 // arm64-LABEL: define{{( dllexport)?}}{{( protected)?}} swiftcc { float, float, float, float } @simd_native_args(float %0, float %1, float %2, float %3)
 // armv6-LABEL: define{{( dllexport)?}}{{( protected)?}} swiftcc void @simd_native_args(%T4simd6float4V* noalias nocapture sret %0, %T4simd6float4V* noalias nocapture dereferenceable({{.*}}) %1)
@@ -73,6 +76,7 @@ entry(%x : $float4):
 
 // x86_64-LABEL: define{{( dllexport)?}}{{( protected)?}} swiftcc { float, float, float }  @simd_native_args_float3(float %0, float %1, float %2)
 // i386-LABEL: define{{( dllexport)?}}{{( protected)?}} swiftcc { float, float, float } @simd_native_args_float3(float %0, float %1, float %2)
+// i686-LABEL: define{{( dllexport)?}}{{( protected)?}} swiftcc { float, float, float } @simd_native_args_float3(float %0, float %1, float %2)
 // aarch64-LABEL: define{{( dllexport)?}}{{( protected)?}} swiftcc { float, float, float } @simd_native_args_float3(float %0, float %1, float %2)
 // arm64-LABEL: define{{( dllexport)?}}{{( protected)?}} swiftcc { float, float, float } @simd_native_args_float3(float %0, float %1, float %2)
 // armv6-LABEL: define{{( dllexport)?}}{{( protected)?}} swiftcc { float, float, float } @simd_native_args_float3(float %0, float %1, float %2)

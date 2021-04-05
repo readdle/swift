@@ -4,6 +4,8 @@
 
 // REQUIRES: CPU=i386 || CPU=x86_64
 // UNSUPPORTED: OS=windows-msvc
+// UNSUPPORTED: OS=linux-android
+// UNSUPPORTED: OS=linux-androideabi
 
 var globalFloat80 : Float80 = 0.0
 

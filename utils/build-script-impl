@@ -416,6 +416,7 @@ function verify_host_is_supported() {
       | watchos-armv7k          \
       | android-armv7           \
       | android-aarch64         \
+      | android-i686            \
       | android-x86_64)
         ;;
       *)
@@ -459,6 +460,10 @@ function set_build_options_for_host() {
         android-armv7)
             SWIFT_HOST_TRIPLE="armv7-unknown-linux-androideabi${ANDROID_API_LEVEL}"
             llvm_target_arch="ARM"
+            ;;
+        android-i686)
+            SWIFT_HOST_TRIPLE="i686-none-linux-android${ANDROID_API_LEVEL}"
+            llvm_target_arch="X86"
             ;;
         android-x86_64)
             SWIFT_HOST_TRIPLE="x86_64-unknown-linux-android${ANDROID_API_LEVEL}"

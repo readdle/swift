@@ -1,4 +1,5 @@
 // RUN: %target-swift-emit-ir %s -I %S/Inputs -enable-cxx-interop | %FileCheck %s
+// UNSUPPORTED: CPU=i686
 
 import NonMemberOutOfLine
 

@@ -16,6 +16,7 @@ entry:
 }
 
 // CHECK-LABEL-i386:   define{{( dllexport)?}}{{( protected)?}} swiftcc void @does_throw(%swift.refcounted* swiftself %0, %swift.error** %1) {{.*}} {
+// CHECK-LABEL-i686:   define{{( dllexport)?}}{{( protected)?}} swiftcc void @does_throw(%swift.refcounted* swiftself %0, %swift.error** %1) {{.*}} {
 // CHECK-LABEL-x86_64: define{{( dllexport)?}}{{( protected)?}} swiftcc void @does_throw(%swift.refcounted* swiftself %0, %swift.error** swifterror %1) {{.*}} {
 // CHECK-LABEL-armv7:  define{{( dllexport)?}}{{( protected)?}} swiftcc void @does_throw(%swift.refcounted* swiftself %0, %swift.error** swifterror %1) {{.*}} {
 // CHECK-LABEL-armv7s: define{{( dllexport)?}}{{( protected)?}} swiftcc void @does_throw(%swift.refcounted* swiftself %0, %swift.error** swifterror %1) {{.*}} {
@@ -38,6 +39,7 @@ sil @does_throw : $@convention(thin) () -> @error Error {
 }
 
 // CHECK-LABEL-i386:   define{{( dllexport)?}}{{( protected)?}} swiftcc void @doesnt_throw(%swift.refcounted* swiftself %0, %swift.error** %1) {{.*}} {
+// CHECK-LABEL-i686:   define{{( dllexport)?}}{{( protected)?}} swiftcc void @doesnt_throw(%swift.refcounted* swiftself %0, %swift.error** %1) {{.*}} {
 // CHECK-LABEL-x86_64: define{{( dllexport)?}}{{( protected)?}} swiftcc void @doesnt_throw(%swift.refcounted* swiftself %0, %swift.error** swifterror %1) {{.*}} {
 // CHECK-LABEL-armv7:  define{{( dllexport)?}}{{( protected)?}} swiftcc void @doesnt_throw(%swift.refcounted* swiftself %0, %swift.error** swifterror %1) {{.*}} {
 // CHECK-LABEL-armv7s: define{{( dllexport)?}}{{( protected)?}} swiftcc void @doesnt_throw(%swift.refcounted* swiftself %0, %swift.error** swifterror %1) {{.*}} {
@@ -61,6 +63,7 @@ sil @try_apply_helper : $@convention(thin) (@owned AnyObject) -> (@owned AnyObje
 sil @try_apply : $@convention(thin) (@owned AnyObject) -> () {
 entry(%0 : $AnyObject):
   // CHECK-i386:        [[ERRORSLOT:%.*]] = alloca [[SWIFTERROR:.*]]%swift.error*, align
+  // CHECK-i686:        [[ERRORSLOT:%.*]] = alloca [[SWIFTERROR:.*]]%swift.error*, align
   // CHECK-x86_64:      [[ERRORSLOT:%.*]] = alloca [[SWIFTERROR:.*]] %swift.error*, align
   // CHECK-armv7:       [[ERRORSLOT:%.*]] = alloca [[SWIFTERROR:.*]] %swift.error*, align
   // CHECK-armv7s:      [[ERRORSLOT:%.*]] = alloca [[SWIFTERROR:.*]] %swift.error*, align

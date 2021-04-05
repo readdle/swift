@@ -1,6 +1,7 @@
 // RUN: %target-swift-frontend %s -emit-ir | %FileCheck %s -check-prefix CHECK -check-prefix CHECK-%target-abi
 
 // REQUIRES: CPU=x86_64
+// UNSUPPORTED: OS=linux-android
 
 // Generated from
 // var x : Int32 = 2

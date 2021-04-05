@@ -2,6 +2,7 @@
 //
 // We can't yet call member functions correctly on Windows (SR-13129).
 // XFAIL: OS=windows-msvc
+// UNSUPPORTED: CPU=i686
 
 import MemberOutOfLine
 

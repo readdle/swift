@@ -1,5 +1,6 @@
 // RUN: %target-swift-frontend -primary-file %s -O -g -S  | %FileCheck %s --check-prefix CHECK --check-prefix CHECK-%target-cpu --check-prefix CHECK-OPT-%target-os
 // RUN: %target-swift-frontend -primary-file %s -g -S  | %FileCheck %s --check-prefix CHECK --check-prefix CHECK-%target-cpu --check-prefix CHECK-NOOPT-%target-os
+// UNSUPPORTED: OS=linux-android && (CPU=i686 || CPU=x86_64)
 
 import Builtin
 import Swift

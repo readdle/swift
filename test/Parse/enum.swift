@@ -7,6 +7,8 @@
 
 // Windows does not support FP80
 // XFAIL: OS=windows-msvc
+// UNSUPPORTED: OS=linux-android
+// UNSUPPORTED: OS=linux-androideabi
 
 enum Empty {}
 

@@ -10,6 +10,8 @@
 // UNSUPPORTED: OS=freebsd
 // UNSUPPORTED: OS=openbsd
 // UNSUPPORTED: OS=windows-msvc
+// UNSUPPORTED: OS=linux-android
+// UNSUPPORTED: OS=linux-androideabi
 
 // MARKER: Contents of (__LLVM,__bitcode) section
 // MARKER-NEXT: 00

@@ -23,6 +23,9 @@ func testConstantFoldFloatLiterals() {
 // i386: call swiftcc void @"$s15FloatingPointIR13acceptFloat32yySfF{{.*}}"(float 1.000000e+00)
 // i386: call swiftcc void @"$s15FloatingPointIR13acceptFloat64yySdF{{.*}}"(double 1.000000e+00)
 
+// i686: call swiftcc void @"$s15FloatingPointIR13acceptFloat32yySfF{{.*}}"(float 1.000000e+00)
+// i686: call swiftcc void @"$s15FloatingPointIR13acceptFloat64yySdF{{.*}}"(double 1.000000e+00)
+
 // x86_64: call swiftcc void @"$s15FloatingPointIR13acceptFloat32yySfF{{.*}}"(float 1.000000e+00)
 // x86_64: call swiftcc void @"$s15FloatingPointIR13acceptFloat64yySdF{{.*}}"(double 1.000000e+00)
 

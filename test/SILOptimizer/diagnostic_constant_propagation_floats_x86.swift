@@ -3,6 +3,8 @@
 //
 // REQUIRES: CPU=i386 || CPU=x86_64
 // UNSUPPORTED: OS=windows-msvc
+// UNSUPPORTED: OS=linux-android
+// UNSUPPORTED: OS=linux-androideabi
 //
 // These are tests for diagnostics produced by constant propagation pass
 // on floating-point operations that are specific to x86 architectures,

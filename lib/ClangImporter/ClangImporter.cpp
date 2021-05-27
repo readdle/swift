@@ -520,21 +520,44 @@ importer::getNormalInvocationArguments(
     invocationArgStrs.push_back(
         "-Werror=non-modular-include-in-framework-module");
 
+  bool EnableCXXInterop = LangOpts.EnableCXXInterop;
+
   if (LangOpts.EnableObjCInterop) {
-    bool EnableCXXInterop = LangOpts.EnableCXXInterop;
-    invocationArgStrs.insert(
-        invocationArgStrs.end(),
-        {"-x", EnableCXXInterop ? "objective-c++" : "objective-c",
-         EnableCXXInterop ? "-std=gnu++17" : "-std=gnu11", "-fobjc-arc"});
+    invocationArgStrs.insert(invocationArgStrs.end(), {"-fobjc-arc"});
     // TODO: Investigate whether 7.0 is a suitable default version.
     if (!triple.isOSDarwin())
       invocationArgStrs.insert(invocationArgStrs.end(),
                                {"-fobjc-runtime=ios-7.0"});
+    invocationArgStrs.insert(invocationArgStrs.end(), {
+      "-x", EnableCXXInterop ? "objective-c++" : "objective-c"
+    });
   } else {
-    bool EnableCXXInterop = LangOpts.EnableCXXInterop;
-    invocationArgStrs.insert(invocationArgStrs.end(),
-                             {"-x", EnableCXXInterop ? "c++" : "c",
-                              EnableCXXInterop ? "-std=gnu++17" : "-std=gnu11"});
+    invocationArgStrs.insert(invocationArgStrs.end(), {
+      "-x", EnableCXXInterop ? "c++" : "c"
+    });
+  }
+
+  {
+    const clang::LangStandard &stdcxx =
+#if defined(CLANG_DEFAULT_STD_CXX)
+        *clang::LangStandard::getLangStandardForName(CLANG_DEFAULT_STD_CXX);
+#else
+        clang::LangStandard::getLangStandardForKind(
+            clang::LangStandard::lang_gnucxx14);
+#endif
+
+    const clang::LangStandard &stdc =
+#if defined(CLANG_DEFAULT_STD_C)
+        *clang::LangStandard::getLangStandardForName(CLANG_DEFAULT_STD_C);
+#else
+        clang::LangStandard::getLangStandardForKind(
+            clang::LangStandard::lang_gnu11);
+#endif
+
+    invocationArgStrs.insert(invocationArgStrs.end(), {
+      (Twine("-std=") + StringRef(EnableCXXInterop ? stdcxx.getName()
+                                                   : stdc.getName())).str()
+    });
   }
 
   // Set C language options.
@@ -964,8 +987,38 @@ ClangImporter::createClangInvocation(ClangImporter *importer,
                                                  &tempDiagClient,
                                                  /*owned*/false);
 
-  return clang::createInvocationFromCommandLine(invocationArgs, tempClangDiags,
-                                                nullptr, false, CC1Args);
+  auto CI = clang::createInvocationFromCommandLine(
+      invocationArgs, tempClangDiags, nullptr, false, CC1Args);
+
+  if (!CI) {
+    return CI;
+  }
+
+  // FIXME: clang fails to generate a module if there is a `-fmodule-map-file`
+  // argument pointing to a missing file.
+  // Such missing module files occur frequently in SourceKit. If the files are
+  // missing, SourceKit fails to build SwiftShims (which wouldn't have required
+  // the missing module file), thus fails to load the stdlib and hence looses
+  // all semantic functionality.
+  // To work around this issue, drop all `-fmodule-map-file` arguments pointing
+  // to missing files and report the error that clang would throw manually.
+  // rdar://77516546 is tracking that the clang importer should be more
+  // resilient and provide a module even if there were building it.
+  auto VFS = clang::createVFSFromCompilerInvocation(
+      *CI, *tempClangDiags,
+      importer->Impl.SwiftContext.SourceMgr.getFileSystem());
+  std::vector<std::string> FilteredModuleMapFiles;
+  for (auto ModuleMapFile : CI->getFrontendOpts().ModuleMapFiles) {
+    if (VFS->exists(ModuleMapFile)) {
+      FilteredModuleMapFiles.push_back(ModuleMapFile);
+    } else {
+      importer->Impl.SwiftContext.Diags.diagnose(
+          SourceLoc(), diag::module_map_not_found, ModuleMapFile);
+    }
+  }
+  CI->getFrontendOpts().ModuleMapFiles = FilteredModuleMapFiles;
+
+  return CI;
 }
 
 std::unique_ptr<ClangImporter>

@@ -25,6 +25,10 @@ add_llvm_symbol_exports(libSwiftSyntaxParser ${LLVM_EXPORTED_SYMBOL_FILE})
 # Adds -dead_strip option
 add_link_opts(libSwiftSyntaxParser)
 
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+  swift_windows_add_target_flags_if_needed(libSwiftSyntaxParser)
+endif()
+
 if (SWIFT_LIBPARSER_VER)
   set(SWIFTSYNTAX_PARSER_VERSION_STRING "${SWIFT_LIBPARSER_VER}")
 else()

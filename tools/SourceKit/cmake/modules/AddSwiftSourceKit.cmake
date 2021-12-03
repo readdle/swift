@@ -13,6 +13,8 @@ function(add_sourcekit_default_compiler_flags target)
       ${SWIFT_HOST_VARIANT_ARCH}_INCLUDE)
     target_include_directories(${target} SYSTEM PRIVATE
       ${${SWIFT_HOST_VARIANT_ARCH}_INCLUDE})
+
+    swift_windows_add_target_flags_if_needed(${target})
   endif()
   target_compile_options(${target} PRIVATE
     -fblocks)
